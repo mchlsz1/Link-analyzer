@@ -74,3 +74,81 @@
       background: #29292d;
       color: white;
     }
+
+    form {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 15px 42px 15px 15px;
+      border-radius: 12px;
+      border: 1px solid #444;
+      background: #09090b;
+      color: white;
+      font-size: 15px;
+    }
+
+    .clear-input {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #888;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .clear-input:hover {
+      background: #29292d;
+      color: #fff;
+    }
+
+    button[type="submit"] {
+      border: none;
+      border-radius: 12px;
+      padding: 0 20px;
+      font-weight: bold;
+      cursor: pointer;
+      background: white;
+      color: black;
+    }
+
+    button:disabled { opacity: .5; }
+
+    #resultado { margin-top: 20px; }
+
+    .box {
+      background: #1c1c20;
+      border: 1px solid #29292d;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .label {
+      color: #888;
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    a {
+      color: #ddd;
+      word-break: break-all;
+    }
