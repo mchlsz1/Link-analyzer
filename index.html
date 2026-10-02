@@ -319,3 +319,114 @@
       background: #29292d;
       color: #ff9999;
     }
+
+    .hist-vazio {
+      text-align: center;
+      color: #666;
+      padding: 40px 20px;
+      font-size: 14px;
+    }
+
+    .aviso-acoes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .aviso-acoes .manter-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #4ade80;
+      color: #062b14;
+    }
+
+    .aviso-acoes .cancel-btn {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .confirmacao {
+      background: #1c1c20;
+      border: 1px solid #702020;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .confirmacao strong {
+      color: #ff9999;
+    }
+
+    .confirmacao-acoes {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .confirmacao-acoes .apagar-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #dc2626;
+      color: white;
+    }
+
+    .confirmacao-acoes .cancel-btn {
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 34px; }
+      form { flex-direction: column; }
+      button[type="submit"] { height: 50px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="tag">LINK ANALYZER</div>
+
+    <h1 id="titulo">Analisador de links</h1>
+
+    <p id="subtitulo">
+      Descubra o destino final de um link e visualize seus redirecionamentos.
+    </p>
+
+    <div class="tabs">
+      <button class="tab ativo" data-modo="analisar">Analisar</button>
+      <button class="tab" data-modo="encurtar">Encurtar</button>
+      <button class="tab" data-modo="historico">Histórico</button>
+    </div>
+
+    <form id="form">
+      <div class="input-wrap">
+        <input
+          id="url"
+          type="url"
+          placeholder="https://exemplo.com/link"
+          required
+        >
+        <button type="button" class="clear-input" id="clearInput" title="Limpar">✕</button>
+      </div>
+
+      <button id="botao" type="submit">
+        Analisar
+      </button>
+    </form>
+
+    <div id="resultado"></div>
+
+  </div>
