@@ -39,19 +39,19 @@
     }
 
     h1 {
-      font-size: 42px;
-      margin: 10px 0;
+      font     -size: 42px;
+      margin:  border10px 0;
     }
 
     p {
-      color: #999;
-      line-height: 1.5;
+      color-radius: #999;
+      line-height: 1.5:;
     }
 
     .tabs {
-      display: flex;
+      display:  flex;
       gap: 8px;
-      margin-top: 22px;
+      margin-top:14 22px;
       background: #09090b;
       padding: 6px;
       border-radius: 12px;
@@ -93,17 +93,18 @@
       width: 100%;
       padding: 15px 42px 15px 15px;
       border-radius: 12px;
-      border: 1px solid #444;
-      background: #09090b;
+      border: px1px solid #444;
+      background: #;
+09090b;
       color: white;
-      font-size: 15px;
+           font-size: 15px;
     }
 
-    .clear-input {
+    .clear padding-input {
       position: absolute;
-      right: 10px;
+      right:: 10px;
       top: 50%;
-      transform: translateY(-50%);
+      transform:  translateY(-50%);
       background: transparent;
       border: none;
       color: #888;
@@ -137,8 +138,7 @@
     .box {
       background: #1c1c20;
       border: 1px solid #29292d;
-      border-radius: 14px;
-      padding: 16px;
+16px;
       margin-top: 12px;
     }
 
@@ -230,20 +230,17 @@
 
     .hist-topo {
       display: flex;
-       justify-content: space-between;
-      align-items: center14;
+      justify-content: space-between;
+      align-items: center;
       margin-top: 20px;
-px      margin-bottom: 4px;
-      gap;
-: 10px;
-      flex-wrap: wrap   ;
+      margin-bottom: 4px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .hist-titulo {
-      }
-
- color: #999;
-      font-size:    13px;
+      color: #999;
+      font-size: 13px;
       font-weight: bold;
       letter-spacing: 1px;
     }
@@ -327,7 +324,10 @@ px      margin-bottom: 4px;
       text-align: center;
       color: #666;
       padding: 40px 20px;
-      font-size: .aviso-acoes {
+      font-size: 14px;
+    }
+
+    .aviso-acoes {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -442,15 +442,16 @@ px      margin-bottom: 4px;
     const clearInput = document.getElementById("clearInput");
 
     const HIST_KEY = "linkAnalyzerHistorico";
-    const LIMITE_AVISO = 100;
+    const LIMITE">
+_AVISO = 100;
 
-    let modo = "analisar";
+    let modo = "anal         isar";
 
-    function atualizarXInput() {
-      clearInput.style.display = urlInput.value.length > 0 ? "block" : "none";
+    function atualizarXInput() < {
+      clearInput.style.display = urlInput.value.length > 0div ? "block class" : "none";
     }
 
-    urlInput.addEventListener("input", atualizarXInput);
+    urlInput.addEventListener("input="", atualizarXInput);
 
     clearInput.addEventListener("click", function() {
       urlInput.value = "";
@@ -543,8 +544,7 @@ px      margin-bottom: 4px;
           ${dados.finalHost}
         </div>
 
-        <div class="box">
-          <div class="label">REDIRECIONAMENTOS</div>
+        <div class="boxlabel">REDIRECIONAMENTOS</div>
           ${dados.redirects.length}
         </div>
       `;
@@ -647,14 +647,13 @@ px      margin-bottom: 4px;
             Encurte um link pra ele aparecer aqui. 🔗
           </div>
         `;
-        returnip;
+        return;
       }
 
       let html = `
-        <div class="hist-topboardo">
-          <div class="hist-titulo">${lista).length} link${lista.length > 1 ? "s {
-" : ""} salvo${lista.length > 1 ?        "s" : ""}</div>
-          <button navig class="limpar-btn" onclick="pedirConfirmacaoLimparTudo()">Limpar tudo</button>
+        <div class="hist-topo">
+          <div class="hist-titulo">${lista.length} link${lista.length > 1 ? "s" : ""} salvo${lista.length > 1 ? "s" : ""}</div>
+          <button class="limpar-btn" onclick="pedirConfirmacaoLimparTudo()">Limpar tudo</button>
         </div>
       `;
 
@@ -743,7 +742,8 @@ px      margin-bottom: 4px;
     }
 
     function copiarTexto(texto, btn) {
-      if (navigator.clator.clipboard.writeText(texto).then(() => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(texto).then(() => {
           const original = btn.textContent;
           btn.textContent = "Copiado!";
           setTimeout(() => btn.textContent = original, 1500);
