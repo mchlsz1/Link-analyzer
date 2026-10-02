@@ -125,6 +125,25 @@ module.exports = async function handler(req, res) {
     const initialUrl = await validateUrl(rawUrl);
     const finalUrl = await resolveFinalUrl(initialUrl);
 
+    // ===== DETECÇÃO DE DUPLICATA =====
+    // Verifica se já existe um código salvo para essa URL final
+    const existingCode = await redis.get(`url:${finalUrl.href}`);
+
+    const protocol = req.headers["x-forwarded-proto"] || "https";
+    const host = req.headers.host;
+    const base = `${protocol}://${host}`;
+
+    if (existingCode) {
+      return res.status(200).json({
+        code: existingCode,
+        shortUrl: `${base}/api/link?c=${existingCode}`,
+        originalUrl: rawUrl,
+        finalUrl: finalUrl.href,
+        reutilizado: true
+      });
+    }
+
+    // Gera código único
     let code;
     let attempts = 0;
     do {
@@ -134,17 +153,18 @@ module.exports = async function handler(req, res) {
       if (!exists) break;
     } while (attempts < 5);
 
+    // Salva nos dois sentidos:
+    //  - link:CODIGO  → URL final (para redirecionar)
+    //  - url:URLFINAL → CODIGO  (para detectar duplicata)
     await redis.set(`link:${code}`, finalUrl.href);
-
-    const protocol = req.headers["x-forwarded-proto"] || "https";
-    const host = req.headers.host;
-    const shortUrl = `${protocol}://${host}/api/link?c=${code}`;
+    await redis.set(`url:${finalUrl.href}`, code);
 
     return res.status(200).json({
       code,
-      shortUrl,
+      shortUrl: `${base}/api/link?c=${code}`,
       originalUrl: rawUrl,
-      finalUrl: finalUrl.href
+      finalUrl: finalUrl.href,
+      reutilizado: false
     });
   } catch (error) {
     return res.status(400).json({
