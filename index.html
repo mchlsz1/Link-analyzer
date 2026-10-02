@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analisador de Links</title>
+  <title>Link Analyzer</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -48,10 +46,37 @@
       line-height: 1.5;
     }
 
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-top: 22px;
+      background: #09090b;
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid #29292d;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #999;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .tab.ativo {
+      background: #29292d;
+      color: white;
+    }
+
     form {
       display: flex;
       gap: 10px;
-      margin-top: 25px;
+      margin-top: 20px;
     }
 
     input {
@@ -65,7 +90,7 @@
       font-size: 15px;
     }
 
-    button {
+    button[type="submit"] {
       border: none;
       border-radius: 12px;
       padding: 0 20px;
@@ -75,13 +100,9 @@
       color: black;
     }
 
-    button:disabled {
-      opacity: .5;
-    }
+    button:disabled { opacity: .5; }
 
-    #resultado {
-      margin-top: 20px;
-    }
+    #resultado { margin-top: 20px; }
 
     .box {
       background: #1c1c20;
@@ -118,18 +139,40 @@
       border-radius: 12px;
     }
 
+    .sucesso {
+      color: #86efac;
+      background: #14291c;
+      border: 1px solid #1f5c37;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    .short-link {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .short-link input {
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .copy-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #4ade80;
+      color: #062b14;
+    }
+
     @media (max-width: 600px) {
-      h1 {
-        font-size: 34px;
-      }
-
-      form {
-        flex-direction: column;
-      }
-
-      button {
-        height: 50px;
-      }
+      h1 { font-size: 34px; }
+      form { flex-direction: column; }
+      button[type="submit"] { height: 50px; }
     }
   </style>
 </head>
@@ -140,11 +183,16 @@
 
     <div class="tag">LINK ANALYZER</div>
 
-    <h1>Analisador de links</h1>
+    <h1 id="titulo">Analisador de links</h1>
 
-    <p>
+    <p id="subtitulo">
       Descubra o destino final de um link e visualize seus redirecionamentos.
     </p>
+
+    <div class="tabs">
+      <button class="tab ativo" data-modo="analisar">Analisar</button>
+      <button class="tab" data-modo="encurtar">Encurtar</button>
+    </div>
 
     <form id="form">
       <input
@@ -168,102 +216,163 @@
     const urlInput = document.getElementById("url");
     const resultado = document.getElementById("resultado");
     const botao = document.getElementById("botao");
+    const titulo = document.getElementById("titulo");
+    const subtitulo = document.getElementById("subtitulo");
+    const tabs = document.querySelectorAll(".tab");
+
+    let modo = "analisar";
+
+    tabs.forEach(function(tab) {
+      tab.addEventListener("click", function() {
+        modo = tab.dataset.modo;
+
+        tabs.forEach(t => t.classList.remove("ativo"));
+        tab.classList.add("ativo");
+
+        resultado.innerHTML = "";
+
+        if (modo === "analisar") {
+          titulo.textContent = "Analisador de links";
+          subtitulo.textContent = "Descubra o destino final de um link e visualize seus redirecionamentos.";
+          botao.textContent = "Analisar";
+          urlInput.placeholder = "https://exemplo.com/link";
+        } else {
+          titulo.textContent = "Encurtador de links";
+          subtitulo.textContent = "Cole uma URL e receba um link curto que redireciona para o destino final.";
+          botao.textContent = "Encurtar";
+          urlInput.placeholder = "https://exemplo.com/link-muito-longo";
+        }
+      });
+    });
 
     form.addEventListener("submit", async function(event) {
-
       event.preventDefault();
 
       const url = urlInput.value.trim();
 
       resultado.innerHTML = "";
       botao.disabled = true;
-      botao.textContent = "Analisando...";
+      botao.textContent = modo === "analisar" ? "Analisando..." : "Encurtando...";
 
       try {
+        const endpoint = modo === "analisar" ? "/api/analisar" : "/api/encurtar";
 
-        const resposta = await fetch("/api/analyze", {
+        const resposta = await fetch(endpoint, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            url: url
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: url })
         });
 
         const dados = await resposta.json();
 
         if (!resposta.ok) {
-          throw new Error(dados.error || "Não foi possível analisar o link.");
+          throw new Error(dados.error || "Erro na requisição.");
         }
 
-        let html = `
-          <div class="box">
-            <div class="label">DESTINO FINAL</div>
-            <a href="${dados.finalUrl}" target="_blank">
-              ${dados.finalUrl}
-            </a>
-          </div>
-
-          <div class="box">
-            <div class="label">DOMÍNIO FINAL</div>
-            ${dados.finalHost}
-          </div>
-
-          <div class="box">
-            <div class="label">REDIRECIONAMENTOS</div>
-            ${dados.redirects.length}
-          </div>
-        `;
-
-        if (dados.warnings && dados.warnings.length) {
-          html += `
-            <div class="aviso">
-              <strong>Atenção</strong>
-              <ul>
-                ${dados.warnings.map(w => `<li>${w}</li>`).join("")}
-              </ul>
-            </div>
-          `;
+        if (modo === "analisar") {
+          renderizarAnalise(dados);
+        } else {
+          renderizarEncurtado(dados);
         }
-
-        html += `
-          <div class="box">
-            <div class="label">CADEIA DE REDIRECIONAMENTOS</div>
-        `;
-
-        dados.redirects.forEach((item, index) => {
-          html += `
-            <p>
-              ${index + 1}. 
-              <strong>${item.status}</strong><br>
-              <a href="${item.url}" target="_blank">
-                ${item.url}
-              </a>
-            </p>
-          `;
-        });
-
-        html += `</div>`;
-
-        resultado.innerHTML = html;
 
       } catch (erro) {
-
         resultado.innerHTML = `
-          <div class="erro">
-            ${erro.message}
+          <div class="erro">${erro.message}</div>
+        `;
+      } finally {
+        botao.disabled = false;
+        botao.textContent = modo === "analisar" ? "Analisar" : "Encurtar";
+      }
+    });
+
+    function renderizarAnalise(dados) {
+      let html = `
+        <div class="box">
+          <div class="label">DESTINO FINAL</div>
+          <a href="${dados.finalUrl}" target="_blank">${dados.finalUrl}</a>
+        </div>
+
+        <div class="box">
+          <div class="label">DOMÍNIO FINAL</div>
+          ${dados.finalHost}
+        </div>
+
+        <div class="box">
+          <div class="label">REDIRECIONAMENTOS</div>
+          ${dados.redirects.length}
+        </div>
+      `;
+
+      if (dados.warnings && dados.warnings.length) {
+        html += `
+          <div class="aviso">
+            <strong>Atenção</strong>
+            <ul>
+              ${dados.warnings.map(w => `<li>${w}</li>`).join("")}
+            </ul>
           </div>
         `;
-
-      } finally {
-
-        botao.disabled = false;
-        botao.textContent = "Analisar";
-
       }
 
-    });
+      html += `
+        <div class="box">
+          <div class="label">CADEIA DE REDIRECIONAMENTOS</div>
+      `;
+
+      dados.redirects.forEach((item, index) => {
+        html += `
+          <p>
+            ${index + 1}.
+            <strong>${item.status}</strong><br>
+            <a href="${item.url}" target="_blank">${item.url}</a>
+          </p>
+        `;
+      });
+
+      html += `</div>`;
+
+      resultado.innerHTML = html;
+    }
+
+    function renderizarEncurtado(dados) {
+      const html = `
+        <div class="sucesso">
+          <strong>✅ Link curto criado!</strong>
+        </div>
+
+        <div class="box">
+          <div class="label">LINK CURTO</div>
+          <div class="short-link">
+            <input type="text" value="${dados.shortUrl}" readonly id="linkCurto">
+            <button class="copy-btn" type="button" onclick="copiarLink()">Copiar</button>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="label">DESTINO FINAL</div>
+          <a href="${dados.finalUrl}" target="_blank">${dados.finalUrl}</a>
+        </div>
+      `;
+
+      resultado.innerHTML = html;
+    }
+
+    function copiarLink() {
+      const input = document.getElementById("linkCurto");
+      input.select();
+      input.setSelectionRange(0, 99999);
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(input.value).then(() => {
+          const btn = event.target;
+          const original = btn.textContent;
+          btn.textContent = "Copiado!";
+          setTimeout(() => btn.textContent = original, 1500);
+        });
+      } else {
+        document.execCommand("copy");
+      }
+    }
   </script>
 
 </body>
