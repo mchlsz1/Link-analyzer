@@ -430,3 +430,121 @@
     <div id="resultado"></div>
 
   </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const urlInput = document.getElementById("url");
+    const resultado = document.getElementById("resultado");
+    const botao = document.getElementById("botao");
+    const titulo = document.getElementById("titulo");
+    const subtitulo = document.getElementById("subtitulo");
+    const tabs = document.querySelectorAll(".tab");
+    const clearInput = document.getElementById("clearInput");
+
+    const HIST_KEY = "linkAnalyzerHistorico";
+    const LIMITE_AVISO = 100;
+
+    let modo = "analisar";
+
+    function atualizarXInput() {
+      clearInput.style.display = urlInput.value.length > 0 ? "block" : "none";
+    }
+
+    urlInput.addEventListener("input", atualizarXInput);
+
+    clearInput.addEventListener("click", function() {
+      urlInput.value = "";
+      atualizarXInput();
+      urlInput.focus();
+    });
+
+    atualizarXInput();
+
+    tabs.forEach(function(tab) {
+      tab.addEventListener("click", function() {
+        modo = tab.dataset.modo;
+
+        tabs.forEach(t => t.classList.remove("ativo"));
+        tab.classList.add("ativo");
+
+        resultado.innerHTML = "";
+
+        if (modo === "analisar") {
+          form.style.display = "flex";
+          titulo.textContent = "Analisador de links";
+          subtitulo.textContent = "Descubra o destino final de um link e visualize seus redirecionamentos.";
+          botao.textContent = "Analisar";
+          urlInput.placeholder = "https://exemplo.com/link";
+        } else if (modo === "encurtar") {
+          form.style.display = "flex";
+          titulo.textContent = "Encurtador de links";
+          subtitulo.textContent = "Cole uma URL e receba um link curto que redireciona para o destino final.";
+          botao.textContent = "Encurtar";
+          urlInput.placeholder = "https://exemplo.com/link-muito-longo";
+        } else {
+          form.style.display = "none";
+          titulo.textContent = "Histórico";
+          subtitulo.textContent = "Todos os links que você já encurtou neste navegador.";
+          renderizarHistorico();
+        }
+      });
+    });
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const url = urlInput.value.trim();
+
+      resultado.innerHTML = "";
+      botao.disabled = true;
+      botao.textContent = modo === "analisar" ? "Analisando..." : "Encurtando...";
+
+      try {
+        const endpoint = modo === "analisar" ? "/api/analisar" : "/api/encurtar";
+
+        const resposta = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: url })
+        });
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+          throw new Error(dados.error || "Erro na requisição.");
+        }
+
+        if (modo === "analisar") {
+          renderizarAnalise(dados);
+        } else {
+          salvarNoHistorico(dados);
+          renderizarEncurtado(dados);
+        }
+
+      } catch (erro) {
+        resultado.innerHTML = `
+          <div class="erro">${erro.message}</div>
+        `;
+      } finally {
+        botao.disabled = false;
+        botao.textContent = modo === "analisar" ? "Analisar" : "Encurtar";
+      }
+    });
+
+    function renderizarAnalise(dados) {
+      let html = `
+        <div class="box">
+          <div class="label">DESTINO FINAL</div>
+          <a href="${dados.finalUrl}" target="_blank">${dados.finalUrl}</a>
+        </div>
+
+        <div class="box">
+          <div class="label">DOMÍNIO FINAL</div>
+          ${dados.finalHost}
+        </div>
+
+        <div class="box">
+          <div class="label">REDIRECIONAMENTOS</div>
+          ${dados.redirects.length}
+        </div>
+      `;
