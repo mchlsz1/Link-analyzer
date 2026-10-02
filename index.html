@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Link Analyzer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
 
   <style>
     * { box-sizing: border-box; }
@@ -79,7 +80,6 @@
       margin-top: 20px;
     }
 
-    /* ===== INPUT COM X ===== */
     .input-wrap {
       position: relative;
       flex: 1;
@@ -227,20 +227,22 @@
       color: #ccc;
     }
 
-    /* ===== HISTÓRICO ===== */
     .hist-topo {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+       justify-content: space-between;
+      align-items: center14;
       margin-top: 20px;
-      margin-bottom: 4px;
-      gap: 10px;
-      flex-wrap: wrap;
+px      margin-bottom: 4px;
+      gap;
+: 10px;
+      flex-wrap: wrap   ;
     }
 
     .hist-titulo {
-      color: #999;
-      font-size: 13px;
+      }
+
+ color: #999;
+      font-size:    13px;
       font-weight: bold;
       letter-spacing: 1px;
     }
@@ -324,10 +326,7 @@
       text-align: center;
       color: #666;
       padding: 40px 20px;
-      font-size: 14px;
-    }
-
-    .aviso-acoes {
+      font-size: .aviso-acoes {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -446,7 +445,6 @@
 
     let modo = "analisar";
 
-    // ===== X DO INPUT =====
     function atualizarXInput() {
       clearInput.style.display = urlInput.value.length > 0 ? "block" : "none";
     }
@@ -461,7 +459,6 @@
 
     atualizarXInput();
 
-    // ===== ABAS =====
     tabs.forEach(function(tab) {
       tab.addEventListener("click", function() {
         modo = tab.dataset.modo;
@@ -492,7 +489,6 @@
       });
     });
 
-    // ===== FORM =====
     form.addEventListener("submit", async function(event) {
       event.preventDefault();
 
@@ -534,7 +530,6 @@
       }
     });
 
-    // ===== ANALISAR =====
     function renderizarAnalise(dados) {
       let html = `
         <div class="box">
@@ -584,7 +579,6 @@
       resultado.innerHTML = html;
     }
 
-    // ===== ENCURTAR =====
     function renderizarEncurtado(dados) {
       const avisoReuso = dados.reutilizado
         ? `<div class="aviso" style="margin-bottom:12px;">♻️ Esse link já tinha sido encurtado antes. Reutilizei o mesmo código.</div>`
@@ -614,7 +608,6 @@
       resultado.innerHTML = html;
     }
 
-    // ===== HISTÓRICO =====
     function lerHistorico() {
       try {
         const raw = localStorage.getItem(HIST_KEY);
@@ -630,8 +623,6 @@
 
     function salvarNoHistorico(dados) {
       const lista = lerHistorico();
-
-      // Evita duplicar se o mesmo shortUrl já existe (caso de reuso)
       const jaExiste = lista.some(item => item.shortUrl === dados.shortUrl);
       if (jaExiste) return;
 
@@ -655,13 +646,14 @@
             Encurte um link pra ele aparecer aqui. 🔗
           </div>
         `;
-        return;
+        returnip;
       }
 
       let html = `
-        <div class="hist-topo">
-          <div class="hist-titulo">${lista.length} link${lista.length > 1 ? "s" : ""} salvo${lista.length > 1 ? "s" : ""}</div>
-          <button class="limpar-btn" onclick="pedirConfirmacaoLimparTudo()">Limpar tudo</button>
+        <div class="hist-topboardo">
+          <div class="hist-titulo">${lista).length} link${lista.length > 1 ? "s {
+" : ""} salvo${lista.length > 1 ?        "s" : ""}</div>
+          <button navig class="limpar-btn" onclick="pedirConfirmacaoLimparTudo()">Limpar tudo</button>
         </div>
       `;
 
@@ -740,7 +732,6 @@
       if (aviso) aviso.style.display = "none";
     }
 
-    // ===== UTILITÁRIOS =====
     function abrirLink(url) {
       window.open(url, "_blank");
     }
@@ -751,8 +742,7 @@
     }
 
     function copiarTexto(texto, btn) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(texto).then(() => {
+      if (navigator.clator.clipboard.writeText(texto).then(() => {
           const original = btn.textContent;
           btn.textContent = "Copiado!";
           setTimeout(() => btn.textContent = original, 1500);
