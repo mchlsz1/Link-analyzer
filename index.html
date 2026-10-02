@@ -548,3 +548,230 @@
           ${dados.redirects.length}
         </div>
       `;
+
+      if (dados.warnings && dados.warnings.length) {
+        html += `
+          <div class="aviso">
+            <strong>Atenção</strong>
+            <ul>
+              ${dados.warnings.map(w => `<li>${w}</li>`).join("")}
+            </ul>
+          </div>
+        `;
+      }
+
+      html += `
+        <div class="box">
+          <div class="label">CADEIA DE REDIRECIONAMENTOS</div>
+      `;
+
+      dados.redirects.forEach((item, index) => {
+        html += `
+          <p>
+            ${index + 1}.
+            <strong>${item.status}</strong><br>
+            <a href="${item.url}" target="_blank">${item.url}</a>
+          </p>
+        `;
+      });
+
+      html += `</div>`;
+
+      resultado.innerHTML = html;
+    }
+
+    function renderizarEncurtado(dados) {
+      const avisoReuso = dados.reutilizado
+        ? `<div class="aviso" style="margin-bottom:12px;">♻️ Esse link já tinha sido encurtado antes. Reutilizei o mesmo código.</div>`
+        : "";
+
+      const html = `
+        ${avisoReuso}
+        <div class="sucesso">
+          <strong>✅ Link curto criado!</strong>
+        </div>
+
+        <div class="box">
+          <div class="label">LINK CURTO</div>
+          <div class="short-link">
+            <input type="text" value="${dados.shortUrl}" readonly id="linkCurto">
+            <button class="copy-btn" type="button" onclick="copiarLink('linkCurto', this)">Copiar</button>
+            <button class="open-btn" type="button" onclick="abrirLink('${dados.shortUrl}')">Abrir</button>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="label">DESTINO FINAL</div>
+          <a href="${dados.finalUrl}" target="_blank">${dados.finalUrl}</a>
+        </div>
+      `;
+
+      resultado.innerHTML = html;
+    }
+
+    function lerHistorico() {
+      try {
+        const raw = localStorage.getItem(HIST_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function gravarHistorico(lista) {
+      localStorage.setItem(HIST_KEY, JSON.stringify(lista));
+    }
+
+    function salvarNoHistorico(dados) {
+      const lista = lerHistorico();
+      const jaExiste = lista.some(item => item.shortUrl === dados.shortUrl);
+      if (jaExiste) return;
+
+      lista.unshift({
+        shortUrl: dados.shortUrl,
+        finalUrl: dados.finalUrl,
+        originalUrl: dados.originalUrl,
+        criadoEm: new Date().toISOString()
+      });
+
+      gravarHistorico(lista);
+    }
+
+    function renderizarHistorico() {
+      const lista = lerHistorico();
+
+      if (!lista.length) {
+        resultado.innerHTML = `
+          <div class="hist-vazio">
+            Nenhum link salvo ainda.<br>
+            Encurte um link pra ele aparecer aqui. 🔗
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div class="hist-topo">
+          <div class="hist-titulo">${lista.length} link${lista.length > 1 ? "s" : ""} salvo${lista.length > 1 ? "s" : ""}</div>
+          <button class="limpar-btn" onclick="pedirConfirmacaoLimparTudo()">Limpar tudo</button>
+        </div>
+      `;
+
+      if (lista.length >= LIMITE_AVISO) {
+        html += `
+          <div class="aviso" style="margin-top:12px;">
+            <strong>⚠️ Histórico pesado</strong>
+            <p style="margin: 6px 0 0; color:#ffd875;">
+              Você tem ${lista.length} links salvos. Quantos quer manter?
+            </p>
+            <div class="aviso-acoes">
+              <button class="manter-btn" onclick="manterUltimos(10)">Manter 10</button>
+              <button class="manter-btn" onclick="manterUltimos(20)">Manter 20</button>
+              <button class="manter-btn" onclick="manterUltimos(50)">Manter 50</button>
+              <button class="cancel-btn" onclick="fecharAviso()">Agora não</button>
+            </div>
+          </div>
+        `;
+      }
+
+      lista.forEach(function(item, index) {
+        html += `
+          <div class="hist-item">
+            <button class="fechar-btn" onclick="removerItem(${index})">✕</button>
+            <div class="hist-original">${item.originalUrl}</div>
+            <div class="hist-curto">${item.shortUrl}</div>
+            <div class="hist-data">Encurtado em ${formatarData(item.criadoEm)}</div>
+            <div class="hist-acoes">
+              <button class="copy-btn" onclick="copiarTexto('${item.shortUrl}', this)">Copiar</button>
+              <button class="open-btn" onclick="abrirLink('${item.shortUrl}')">Abrir</button>
+            </div>
+          </div>
+        `;
+      });
+
+      resultado.innerHTML = html;
+    }
+
+    function removerItem(index) {
+      const lista = lerHistorico();
+      lista.splice(index, 1);
+      gravarHistorico(lista);
+      renderizarHistorico();
+    }
+
+    function pedirConfirmacaoLimparTudo() {
+      resultado.innerHTML = `
+        <div class="confirmacao">
+          <strong>⚠️ Apagar TODOS os links?</strong>
+          <p style="margin: 8px 0 0; color:#ccc;">
+            Essa ação não pode ser desfeita.
+          </p>
+          <div class="confirmacao-acoes">
+            <button class="apagar-btn" onclick="confirmarLimparTudo()">Sim, apagar tudo</button>
+            <button class="cancel-btn" onclick="renderizarHistorico()">Cancelar</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function confirmarLimparTudo() {
+      localStorage.removeItem(HIST_KEY);
+      renderizarHistorico();
+    }
+
+    function manterUltimos(n) {
+      const lista = lerHistorico();
+      const mantidos = lista.slice(0, n);
+      gravarHistorico(mantidos);
+      renderizarHistorico();
+    }
+
+    function fecharAviso() {
+      renderizarHistorico();
+      const aviso = resultado.querySelector(".aviso");
+      if (aviso) aviso.style.display = "none";
+    }
+
+    function abrirLink(url) {
+      window.open(url, "_blank");
+    }
+
+    function copiarLink(id, btn) {
+      const input = document.getElementById(id);
+      copiarTexto(input.value, btn);
+    }
+
+    function copiarTexto(texto, btn) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(texto).then(() => {
+          const original = btn.textContent;
+          btn.textContent = "Copiado!";
+          setTimeout(() => btn.textContent = original, 1500);
+        });
+      } else {
+        const tmp = document.createElement("textarea");
+        tmp.value = texto;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand("copy");
+        document.body.removeChild(tmp);
+
+        const original = btn.textContent;
+        btn.textContent = "Copiado!";
+        setTimeout(() => btn.textContent = original, 1500);
+      }
+    }
+
+    function formatarData(iso) {
+      const d = new Date(iso);
+      const dia = String(d.getDate()).padStart(2, "0");
+      const mes = String(d.getMonth() + 1).padStart(2, "0");
+      const ano = d.getFullYear();
+      const hora = String(d.getHours()).padStart(2, "0");
+      const min = String(d.getMinutes()).padStart(2, "0");
+      return `${dia}/${mes}/${ano} às ${hora}:${min}`;
+    }
+  </script>
+
+</body>
+</html>
