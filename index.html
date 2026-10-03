@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Link Analyzer</title>
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -85,8 +85,6 @@
       position: relative;
       flex: 1;
       min-width: 0;
-      display: flex;
-      align-items: center;
     }
 
     .input-wrap input {
@@ -108,16 +106,8 @@
       border: none;
       color: #888;
       font-size: 18px;
-      line-height: 1;
       cursor: pointer;
-      padding: 6px 8px;
-      border-radius: 6px;
       display: none;
-    }
-
-    .clear-input:hover {
-      background: #29292d;
-      color: #fff;
     }
 
     button[type="submit"] {
@@ -130,9 +120,13 @@
       color: black;
     }
 
-    button:disabled { opacity: .5; }
+    button:disabled {
+      opacity: .5;
+    }
 
-    #resultado { margin-top: 20px; }
+    #resultado {
+      margin-top: 20px;
+    }
 
     .box {
       background: #1c1c20;
@@ -167,6 +161,7 @@
       border: 1px solid #705b1c;
       padding: 15px;
       border-radius: 12px;
+      margin-top: 12px;
     }
 
     .sucesso {
@@ -197,35 +192,48 @@
       color: white;
     }
 
-    .copy-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #4ade80;
-      color: #062b14;
-    }
-
-    .open-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #29292d;
-      color: white;
-    }
-
+    .copy-btn,
+    .open-btn,
     .cancel-btn {
       border: none;
       border-radius: 10px;
       padding: 12px 16px;
       font-weight: bold;
       cursor: pointer;
+    }
+
+    .copy-btn {
+      background: #4ade80;
+      color: #062b14;
+    }
+
+    .open-btn {
+      background: #29292d;
+      color: white;
+    }
+
+    .cancel-btn {
       background: transparent;
       border: 1px solid #444;
       color: #ccc;
+    }
+
+    .loot-button {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .loot-data {
+      width: 100%;
+      min-height: 90px;
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #09090b;
+      color: white;
+      border: 1px solid #444;
+      font-family: monospace;
+      resize: vertical;
     }
 
     .hist-topo {
@@ -233,7 +241,6 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 20px;
-      margin-bottom: 4px;
       gap: 10px;
       flex-wrap: wrap;
     }
@@ -293,13 +300,6 @@
       flex-wrap: wrap;
     }
 
-    .hist-acoes .copy-btn,
-    .hist-acoes .open-btn,
-    .hist-acoes .cancel-btn {
-      padding: 8px 12px;
-      font-size: 12px;
-    }
-
     .fechar-btn {
       position: absolute;
       top: 12px;
@@ -308,16 +308,7 @@
       border: none;
       color: #888;
       font-size: 20px;
-      line-height: 1;
       cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-
-    .fechar-btn:hover {
-      background: #29292d;
-      color: #ff9999;
     }
 
     .hist-vazio {
@@ -325,29 +316,6 @@
       color: #666;
       padding: 40px 20px;
       font-size: 14px;
-    }
-
-    .aviso-acoes {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .aviso-acoes .manter-btn {
-      border: none;
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #4ade80;
-      color: #062b14;
-    }
-
-    .aviso-acoes .cancel-btn {
-      padding: 8px 12px;
-      font-size: 12px;
     }
 
     .confirmacao {
@@ -369,409 +337,1022 @@
       flex-wrap: wrap;
     }
 
-    .confirmacao-acoes .apagar-btn {
+    .apagar-btn {
       border: none;
       border-radius: 8px;
       padding: 10px 16px;
-      font-size: 13px;
       font-weight: bold;
       cursor: pointer;
       background: #dc2626;
       color: white;
     }
 
-    .confirmacao-acoes .cancel-btn {
-      padding: 10px 16px;
-      font-size: 13px;
-    }
-
     @media (max-width: 600px) {
-      h1 { font-size: 34px; }
-      form { flex-direction: column; }
-      button[type="submit"] { height: 50px; }
+      h1 {
+        font-size: 34px;
+      }
+
+      form {
+        flex-direction: column;
+      }
+
+      button[type="submit"] {
+        height: 50px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <div class="tag">LINK ANALYZER</div>
+  <div class="tag">LINK ANALYZER</div>
 
-    <h1 id="titulo">Analisador de links</h1>
+  <h1 id="titulo">Analisador de links</h1>
 
-    <p id="subtitulo">
-      Descubra o destino final de um link e visualize seus redirecionamentos.
-    </p>
+  <p id="subtitulo">
+    Descubra o destino final de um link e visualize seus redirecionamentos.
+  </p>
 
-    <div class="tabs">
-      <button class="tab ativo" data-modo="analisar">Analisar</button>
-      <button class="tab" data-modo="encurtar">Encurtar</button>
-      <button class="tab" data-modo="historico">Histórico</button>
-    </div>
-
-    <form id="form">
-      <div class="input-wrap">
-        <input
-          id="url"
-          type="url"
-          placeholder="https://exemplo.com/link"
-          required
-        >
-        <button type="button" class="clear-input" id="clearInput" title="Limpar">✕</button>
-      </div>
-
-      <button id="botao" type="submit">
-        Analisar
-      </button>
-    </form>
-
-    <div id="resultado"></div>
-
+  <div class="tabs">
+    <button class="tab ativo" data-modo="analisar">Analisar</button>
+    <button class="tab" data-modo="encurtar">Encurtar</button>
+    <button class="tab" data-modo="historico">Histórico</button>
   </div>
 
-  <script>
-    const form = document.getElementById("form");
-    const urlInput = document.getElementById("url");
-    const resultado = document.getElementById("resultado");
-    const botao = document.getElementById("botao");
-    const titulo = document.getElementById("titulo");
-    const subtitulo = document.getElementById("subtitulo");
-    const tabs = document.querySelectorAll(".tab");
-    const clearInput = document.getElementById("clearInput");
+  <form id="form">
 
-    const HIST_KEY = "linkAnalyzerHistorico";
-    const LIMITE_AVISO = 100;
+    <div class="input-wrap">
 
-    let modo = "analisar";
+      <input
+        id="url"
+        type="url"
+        placeholder="https://exemplo.com/link"
+        required
+      >
 
-    function atualizarXInput() {
-      clearInput.style.display = urlInput.value.length > 0 ? "block" : "none";
+      <button
+        type="button"
+        class="clear-input"
+        id="clearInput"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <button id="botao" type="submit">
+      Analisar
+    </button>
+
+  </form>
+
+  <div id="resultado"></div>
+
+</div>
+
+<script>
+
+const form = document.getElementById("form");
+const urlInput = document.getElementById("url");
+const resultado = document.getElementById("resultado");
+const botao = document.getElementById("botao");
+const titulo = document.getElementById("titulo");
+const subtitulo = document.getElementById("subtitulo");
+const tabs = document.querySelectorAll(".tab");
+const clearInput = document.getElementById("clearInput");
+
+const HIST_KEY = "linkAnalyzerHistorico";
+
+let modo = "analisar";
+
+
+/* =========================
+   LIMPAR INPUT
+========================= */
+
+function atualizarXInput() {
+  clearInput.style.display =
+    urlInput.value.length > 0 ? "block" : "none";
+}
+
+urlInput.addEventListener("input", atualizarXInput);
+
+clearInput.addEventListener("click", function() {
+  urlInput.value = "";
+  atualizarXInput();
+  urlInput.focus();
+});
+
+atualizarXInput();
+
+
+/* =========================
+   ABAS
+========================= */
+
+tabs.forEach(function(tab) {
+
+  tab.addEventListener("click", function() {
+
+    modo = tab.dataset.modo;
+
+    tabs.forEach(function(t) {
+      t.classList.remove("ativo");
+    });
+
+    tab.classList.add("ativo");
+
+    resultado.innerHTML = "";
+
+    if (modo === "analisar") {
+
+      form.style.display = "flex";
+
+      titulo.textContent = "Analisador de links";
+
+      subtitulo.textContent =
+        "Descubra o destino final de um link e visualize seus redirecionamentos.";
+
+      botao.textContent = "Analisar";
+
+      urlInput.placeholder =
+        "https://exemplo.com/link";
+
     }
 
-    urlInput.addEventListener("input", atualizarXInput);
+    else if (modo === "encurtar") {
 
-    clearInput.addEventListener("click", function() {
-      urlInput.value = "";
-      atualizarXInput();
-      urlInput.focus();
+      form.style.display = "flex";
+
+      titulo.textContent = "Encurtador de links";
+
+      subtitulo.textContent =
+        "Cole uma URL e receba um link curto que redireciona para o destino final.";
+
+      botao.textContent = "Encurtar";
+
+      urlInput.placeholder =
+        "https://exemplo.com/link-muito-longo";
+
+    }
+
+    else {
+
+      form.style.display = "none";
+
+      titulo.textContent = "Histórico";
+
+      subtitulo.textContent =
+        "Todos os links que você já encurtou neste navegador.";
+
+      renderizarHistorico();
+
+    }
+
+  });
+
+});
+
+
+/* =========================
+   FORMULÁRIO
+========================= */
+
+form.addEventListener("submit", async function(event) {
+
+  event.preventDefault();
+
+  const url = urlInput.value.trim();
+
+  if (!url) {
+    return;
+  }
+
+  resultado.innerHTML = "";
+
+  botao.disabled = true;
+
+  botao.textContent =
+    modo === "analisar"
+      ? "Analisando..."
+      : "Encurtando...";
+
+  try {
+
+    const endpoint =
+      modo === "analisar"
+        ? "/api/analisar"
+        : "/api/encurtar";
+
+    const resposta = await fetch(endpoint, {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        url: url
+      })
+
     });
 
-    atualizarXInput();
+    const dados = await resposta.json();
 
-    tabs.forEach(function(tab) {
-      tab.addEventListener("click", function() {
-        modo = tab.dataset.modo;
+    if (!resposta.ok) {
+      throw new Error(
+        dados.error || "Erro na requisição."
+      );
+    }
 
-        tabs.forEach(t => t.classList.remove("ativo"));
-        tab.classList.add("ativo");
+    if (modo === "analisar") {
 
-        resultado.innerHTML = "";
+      renderizarAnalise(dados);
 
-        if (modo === "analisar") {
-          form.style.display = "flex";
-          titulo.textContent = "Analisador de links";
-          subtitulo.textContent = "Descubra o destino final de um link e visualize seus redirecionamentos.";
-          botao.textContent = "Analisar";
-          urlInput.placeholder = "https://exemplo.com/link";
-        } else if (modo === "encurtar") {
-          form.style.display = "flex";
-          titulo.textContent = "Encurtador de links";
-          subtitulo.textContent = "Cole uma URL e receba um link curto que redireciona para o destino final.";
-          botao.textContent = "Encurtar";
-          urlInput.placeholder = "https://exemplo.com/link-muito-longo";
-        } else {
-          form.style.display = "none";
-          titulo.textContent = "Histórico";
-          subtitulo.textContent = "Todos os links que você já encurtou neste navegador.";
-          renderizarHistorico();
-        }
-      });
-    });
+    }
 
-    form.addEventListener("submit", async function(event) {
-      event.preventDefault();
+    else {
 
-      const url = urlInput.value.trim();
+      salvarNoHistorico(dados);
 
-      resultado.innerHTML = "";
-      botao.disabled = true;
-      botao.textContent = modo === "analisar" ? "Analisando..." : "Encurtando...";
+      renderizarEncurtado(dados);
 
-      try {
-        const endpoint = modo === "analisar" ? "/api/analisar" : "/api/encurtar";
+    }
 
-        const resposta = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: url })
-        });
+  }
 
-        const dados = await resposta.json();
+  catch (erro) {
 
-        if (!resposta.ok) {
-          throw new Error(dados.error || "Erro na requisição.");
-        }
+    resultado.innerHTML = `
+      <div class="erro">
+        ${escapeHtml(erro.message)}
+      </div>
+    `;
 
-        if (modo === "analisar") {
-          renderizarAnalise(dados);
-        } else {
-          salvarNoHistorico(dados);
-          renderizarEncurtado(dados);
-        }
+  }
 
-      } catch (erro) {
-        resultado.innerHTML = `
-          <div class="erro">${erro.message}</div>
-        `;
-      } finally {
-        botao.disabled = false;
-        botao.textContent = modo === "analisar" ? "Analisar" : "Encurtar";
-      }
-    });
+  finally {
 
-    function renderizarAnalise(dados) {
-      let html = `
-        <div class="box">
-          <div class="label">DESTINO FINAL</div>
-          <a href="${dados.finalUrl}" target="_blank">${dados.finalUrl}</a>
-        </div>
+    botao.disabled = false;
 
-        <div class="box">
-          <div class="label">DOMÍNIO FINAL</div>
-          ${dados.finalHost}
-        </div>
+    botao.textContent =
+      modo === "analisar"
+        ? "Analisar"
+        : "Encurtar";
 
-        <div class="box">
-          <div class="label">REDIRECIONAMENTOS</div>
-          ${dados.redirects.length}
-        </div>
-      `;
+  }
 
-      if (dados.warnings && dados.warnings.length) {
-        html += `
-          <div class="aviso">
-            <strong>Atenção</strong>
-            <ul>
-              ${dados.warnings.map(w => `<li>${w}</li>`).join("")}
-            </ul>
-          </div>
-        `;
-      }
+});
+
+
+/* =========================
+   ANÁLISE
+========================= */
+
+function renderizarAnalise(dados) {
+
+  let html = `
+
+    <div class="box">
+
+      <div class="label">
+        DESTINO FINAL
+      </div>
+
+      <a
+        href="${escapeAttribute(dados.finalUrl)}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        ${escapeHtml(dados.finalUrl)}
+      </a>
+
+    </div>
+
+    <div class="box">
+
+      <div class="label">
+        DOMÍNIO FINAL
+      </div>
+
+      ${escapeHtml(dados.finalHost || "")}
+
+    </div>
+
+    <div class="box">
+
+      <div class="label">
+        REDIRECIONAMENTOS
+      </div>
+
+      ${(dados.redirects || []).length}
+
+    </div>
+
+  `;
+
+
+  if (
+    dados.warnings &&
+    dados.warnings.length
+  ) {
+
+    html += `
+
+      <div class="aviso">
+
+        <strong>Atenção</strong>
+
+        <ul>
+
+          ${dados.warnings
+            .map(function(w) {
+              return `<li>${escapeHtml(w)}</li>`;
+            })
+            .join("")}
+
+        </ul>
+
+      </div>
+
+    `;
+
+  }
+
+
+  html += `
+
+    <div class="box">
+
+      <div class="label">
+        CADEIA DE REDIRECIONAMENTOS
+      </div>
+
+  `;
+
+
+  (dados.redirects || []).forEach(
+    function(item, index) {
 
       html += `
-        <div class="box">
-          <div class="label">CADEIA DE REDIRECIONAMENTOS</div>
+
+        <p>
+
+          ${index + 1}.
+          <strong>
+            ${escapeHtml(item.status)}
+          </strong>
+
+          <br>
+
+          <a
+            href="${escapeAttribute(item.url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ${escapeHtml(item.url)}
+          </a>
+
+        </p>
+
       `;
 
-      dados.redirects.forEach((item, index) => {
-        html += `
-          <p>
-            ${index + 1}.
-            <strong>${item.status}</strong><br>
-            <a href="${item.url}" target="_blank">${item.url}</a>
-          </p>
-        `;
+    }
+  );
+
+
+  html += `</div>`;
+
+  resultado.innerHTML = html;
+
+}
+
+
+/* =========================
+   ENCURTADO
+========================= */
+
+function renderizarEncurtado(dados) {
+
+  const avisoReuso =
+    dados.reutilizado
+
+      ? `
+        <div
+          class="aviso"
+          style="margin-bottom:12px;"
+        >
+          ♻️ Esse link já tinha sido encurtado antes.
+          Reutilizei o mesmo código.
+        </div>
+      `
+
+      : "";
+
+
+  resultado.innerHTML = `
+
+    ${avisoReuso}
+
+    <div class="sucesso">
+
+      <strong>
+        ✅ Link curto criado!
+      </strong>
+
+    </div>
+
+
+    <div class="box">
+
+      <div class="label">
+        LINK CURTO
+      </div>
+
+      <div class="short-link">
+
+        <input
+          type="text"
+          value="${escapeAttribute(dados.shortUrl)}"
+          readonly
+          id="linkCurto"
+        >
+
+        <button
+          class="copy-btn"
+          type="button"
+          onclick="copiarLink('linkCurto', this)"
+        >
+          Copiar
+        </button>
+
+        <button
+          class="open-btn"
+          type="button"
+          onclick="abrirLink(${JSON.stringify(dados.shortUrl)})"
+        >
+          Abrir
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="box">
+
+      <div class="label">
+        DESTINO FINAL
+      </div>
+
+      <a
+        href="${escapeAttribute(dados.finalUrl)}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        ${escapeHtml(dados.finalUrl)}
+      </a>
+
+    </div>
+
+
+    <div class="box">
+
+      <div class="label">
+        API OFICIAL DO LOOTLABS
+      </div>
+
+      <p>
+        Gere um valor <code>data</code> através da API
+        oficial para um destino autorizado.
+      </p>
+
+      <button
+        type="button"
+        class="open-btn loot-button"
+        onclick="gerarLootLabsAPI(${JSON.stringify(dados.finalUrl)})"
+      >
+        Gerar pela API do LootLabs
+      </button>
+
+      <div id="lootResultado"></div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================
+   LOOTLABS — API OFICIAL
+========================= */
+
+async function gerarLootLabsAPI(destino) {
+
+  const area =
+    document.getElementById("lootResultado");
+
+  if (!area) {
+    return;
+  }
+
+
+  area.innerHTML = `
+
+    <div class="aviso">
+      Gerando...
+    </div>
+
+  `;
+
+
+  try {
+
+    const resposta = await fetch(
+      "/api/lootlabs",
+      {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          destinationUrl: destino
+        })
+
+      }
+    );
+
+
+    const dados = await resposta.json();
+
+
+    if (!resposta.ok) {
+
+      throw new Error(
+        dados.error ||
+        "A API recusou a solicitação."
+      );
+
+    }
+
+
+    area.innerHTML = `
+
+      <div
+        class="sucesso"
+        style="margin-top:12px;"
+      >
+
+        <strong>
+          ✅ Data gerado pela API
+        </strong>
+
+      </div>
+
+
+      <textarea
+        class="loot-data"
+        readonly
+      >${escapeHtml(dados.data || "")}</textarea>
+
+
+      <button
+        type="button"
+        class="copy-btn"
+        style="margin-top:8px;"
+        onclick="copiarTexto(
+          ${JSON.stringify(dados.data || "")},
+          this
+        )"
+      >
+        Copiar data
+      </button>
+
+    `;
+
+  }
+
+  catch (erro) {
+
+    area.innerHTML = `
+
+      <div
+        class="erro"
+        style="margin-top:12px;"
+      >
+        ${escapeHtml(erro.message)}
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================
+   HISTÓRICO
+========================= */
+
+function lerHistorico() {
+
+  try {
+
+    const raw =
+      localStorage.getItem(HIST_KEY);
+
+    return raw
+      ? JSON.parse(raw)
+      : [];
+
+  }
+
+  catch {
+
+    return [];
+
+  }
+
+}
+
+
+function gravarHistorico(lista) {
+
+  localStorage.setItem(
+    HIST_KEY,
+    JSON.stringify(lista)
+  );
+
+}
+
+
+function salvarNoHistorico(dados) {
+
+  const lista =
+    lerHistorico();
+
+  const jaExiste =
+    lista.some(function(item) {
+      return item.shortUrl === dados.shortUrl;
+    });
+
+
+  if (jaExiste) {
+    return;
+  }
+
+
+  lista.unshift({
+
+    shortUrl: dados.shortUrl,
+
+    finalUrl: dados.finalUrl,
+
+    originalUrl: dados.originalUrl,
+
+    criadoEm: new Date().toISOString()
+
+  });
+
+
+  gravarHistorico(lista);
+
+}
+
+
+function renderizarHistorico() {
+
+  const lista =
+    lerHistorico();
+
+
+  if (!lista.length) {
+
+    resultado.innerHTML = `
+
+      <div class="hist-vazio">
+
+        Nenhum link salvo ainda.<br>
+
+        Encurte um link pra ele aparecer aqui. 🔗
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  let html = `
+
+    <div class="hist-topo">
+
+      <div class="hist-titulo">
+
+        ${lista.length}
+        link${lista.length > 1 ? "s" : ""}
+        salvo${lista.length > 1 ? "s" : ""}
+
+      </div>
+
+      <button
+        class="limpar-btn"
+        onclick="pedirConfirmacaoLimparTudo()"
+      >
+        Limpar tudo
+      </button>
+
+    </div>
+
+  `;
+
+
+  lista.forEach(
+    function(item, index) {
+
+      html += `
+
+        <div class="hist-item">
+
+          <button
+            class="fechar-btn"
+            onclick="removerItem(${index})"
+          >
+            ✕
+          </button>
+
+
+          <div class="hist-original">
+
+            ${escapeHtml(item.originalUrl)}
+
+          </div>
+
+
+          <div class="hist-curto">
+
+            ${escapeHtml(item.shortUrl)}
+
+          </div>
+
+
+          <div class="hist-data">
+
+            Encurtado em
+            ${formatarData(item.criadoEm)}
+
+          </div>
+
+
+          <div class="hist-acoes">
+
+            <button
+              class="copy-btn"
+              onclick="copiarTexto(
+                ${JSON.stringify(item.shortUrl)},
+                this
+              )"
+            >
+              Copiar
+            </button>
+
+
+            <button
+              class="open-btn"
+              onclick="abrirLink(
+                ${JSON.stringify(item.shortUrl)}
+              )"
+            >
+              Abrir
+            </button>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  resultado.innerHTML = html;
+
+}
+
+
+function removerItem(index) {
+
+  const lista =
+    lerHistorico();
+
+  lista.splice(index, 1);
+
+  gravarHistorico(lista);
+
+  renderizarHistorico();
+
+}
+
+
+function pedirConfirmacaoLimparTudo() {
+
+  resultado.innerHTML = `
+
+    <div class="confirmacao">
+
+      <strong>
+        ⚠️ Apagar TODOS os links?
+      </strong>
+
+      <p>
+        Essa ação não pode ser desfeita.
+      </p>
+
+      <div class="confirmacao-acoes">
+
+        <button
+          class="apagar-btn"
+          onclick="confirmarLimparTudo()"
+        >
+          Sim, apagar tudo
+        </button>
+
+        <button
+          class="cancel-btn"
+          onclick="renderizarHistorico()"
+        >
+          Cancelar
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+function confirmarLimparTudo() {
+
+  localStorage.removeItem(HIST_KEY);
+
+  renderizarHistorico();
+
+}
+
+
+/* =========================
+   LINKS
+========================= */
+
+function abrirLink(url) {
+
+  window.open(
+    url,
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+}
+
+
+function copiarLink(id, btn) {
+
+  const input =
+    document.getElementById(id);
+
+  copiarTexto(
+    input.value,
+    btn
+  );
+
+}
+
+
+function copiarTexto(texto, btn) {
+
+  if (navigator.clipboard) {
+
+    navigator.clipboard.writeText(texto)
+      .then(function() {
+
+        const original =
+          btn.textContent;
+
+        btn.textContent =
+          "Copiado!";
+
+        setTimeout(
+          function() {
+            btn.textContent = original;
+          },
+          1500
+        );
+
       });
 
-      html += `</div>`;
+    return;
 
-      resultado.innerHTML = html;
-    }
+  }
 
-    function renderizarEncurtado(dados) {
-      const avisoReuso = dados.reutilizado
-        ? `<div class="aviso" style="margin-bottom:12px;">♻️ Esse link já tinha sido encurtado antes. Reutilizei o mesmo código.</div>`
-        : "";
 
-      const html = `
-        ${avisoReuso}
-        <div class="sucesso">
-          <strong>✅ Link curto criado!</strong>
-        </div>
+  const tmp =
+    document.createElement("textarea");
 
-        <div class="box">
-          <div class="label">LINK CURTO</div>
-          <div class="short-link">
-            <input type="text" value="${dados.shortUrl}" readonly id="linkCurto">
-            <button class="copy-btn" type="button" onclick="copiarLink('linkCurto', this)">Copiar</button>
-            <button class="open-btn" type="button" onclick="abrirLink('${dados.shortUrl}')">Abrir</button>
-          </div>
-        </div>
+  tmp.value = texto;
 
-        <div class="box">
-          <div class="label">DESTINO FINAL</div>
-          <a href="${dados.finalUrl}" target="_blank">${dados.finalUrl}</a>
-        </div>
-      `;
+  document.body.appendChild(tmp);
 
-      resultado.innerHTML = html;
-    }
+  tmp.select();
 
-    function lerHistorico() {
-      try {
-        const raw = localStorage.getItem(HIST_KEY);
-        return raw ? JSON.parse(raw) : [];
-      } catch {
-        return [];
-      }
-    }
+  document.execCommand("copy");
 
-    function gravarHistorico(lista) {
-      localStorage.setItem(HIST_KEY, JSON.stringify(lista));
-    }
+  document.body.removeChild(tmp);
 
-    function salvarNoHistorico(dados) {
-      const lista = lerHistorico();
-      const jaExiste = lista.some(item => item.shortUrl === dados.shortUrl);
-      if (jaExiste) return;
 
-      lista.unshift({
-        shortUrl: dados.shortUrl,
-        finalUrl: dados.finalUrl,
-        originalUrl: dados.originalUrl,
-        criadoEm: new Date().toISOString()
-      });
+  const original =
+    btn.textContent;
 
-      gravarHistorico(lista);
-    }
+  btn.textContent =
+    "Copiado!";
 
-    function renderizarHistorico() {
-      const lista = lerHistorico();
+  setTimeout(
+    function() {
+      btn.textContent = original;
+    },
+    1500
+  );
 
-      if (!lista.length) {
-        resultado.innerHTML = `
-          <div class="hist-vazio">
-            Nenhum link salvo ainda.<br>
-            Encurte um link pra ele aparecer aqui. 🔗
-          </div>
-        `;
-        return;
-      }
+}
 
-      let html = `
-        <div class="hist-topo">
-          <div class="hist-titulo">${lista.length} link${lista.length > 1 ? "s" : ""} salvo${lista.length > 1 ? "s" : ""}</div>
-          <button class="limpar-btn" onclick="pedirConfirmacaoLimparTudo()">Limpar tudo</button>
-        </div>
-      `;
 
-      if (lista.length >= LIMITE_AVISO) {
-        html += `
-          <div class="aviso" style="margin-top:12px;">
-            <strong>⚠️ Histórico pesado</strong>
-            <p style="margin: 6px 0 0; color:#ffd875;">
-              Você tem ${lista.length} links salvos. Quantos quer manter?
-            </p>
-            <div class="aviso-acoes">
-              <button class="manter-btn" onclick="manterUltimos(10)">Manter 10</button>
-              <button class="manter-btn" onclick="manterUltimos(20)">Manter 20</button>
-              <button class="manter-btn" onclick="manterUltimos(50)">Manter 50</button>
-              <button class="cancel-btn" onclick="fecharAviso()">Agora não</button>
-            </div>
-          </div>
-        `;
-      }
+/* =========================
+   DATA
+========================= */
 
-      lista.forEach(function(item, index) {
-        html += `
-          <div class="hist-item">
-            <button class="fechar-btn" onclick="removerItem(${index})">✕</button>
-            <div class="hist-original">${item.originalUrl}</div>
-            <div class="hist-curto">${item.shortUrl}</div>
-            <div class="hist-data">Encurtado em ${formatarData(item.criadoEm)}</div>
-            <div class="hist-acoes">
-              <button class="copy-btn" onclick="copiarTexto('${item.shortUrl}', this)">Copiar</button>
-              <button class="open-btn" onclick="abrirLink('${item.shortUrl}')">Abrir</button>
-            </div>
-          </div>
-        `;
-      });
+function formatarData(iso) {
 
-      resultado.innerHTML = html;
-    }
+  const d =
+    new Date(iso);
 
-    function removerItem(index) {
-      const lista = lerHistorico();
-      lista.splice(index, 1);
-      gravarHistorico(lista);
-      renderizarHistorico();
-    }
+  const dia =
+    String(d.getDate())
+      .padStart(2, "0");
 
-    function pedirConfirmacaoLimparTudo() {
-      resultado.innerHTML = `
-        <div class="confirmacao">
-          <strong>⚠️ Apagar TODOS os links?</strong>
-          <p style="margin: 8px 0 0; color:#ccc;">
-            Essa ação não pode ser desfeita.
-          </p>
-          <div class="confirmacao-acoes">
-            <button class="apagar-btn" onclick="confirmarLimparTudo()">Sim, apagar tudo</button>
-            <button class="cancel-btn" onclick="renderizarHistorico()">Cancelar</button>
-          </div>
-        </div>
-      `;
-    }
+  const mes =
+    String(d.getMonth() + 1)
+      .padStart(2, "0");
 
-    function confirmarLimparTudo() {
-      localStorage.removeItem(HIST_KEY);
-      renderizarHistorico();
-    }
+  const ano =
+    d.getFullYear();
 
-    function manterUltimos(n) {
-      const lista = lerHistorico();
-      const mantidos = lista.slice(0, n);
-      gravarHistorico(mantidos);
-      renderizarHistorico();
-    }
+  const hora =
+    String(d.getHours())
+      .padStart(2, "0");
 
-    function fecharAviso() {
-      renderizarHistorico();
-      const aviso = resultado.querySelector(".aviso");
-      if (aviso) aviso.style.display = "none";
-    }
+  const min =
+    String(d.getMinutes())
+      .padStart(2, "0");
 
-    function abrirLink(url) {
-      window.open(url, "_blank");
-    }
+  return `${dia}/${mes}/${ano} às ${hora}:${min}`;
 
-    function copiarLink(id, btn) {
-      const input = document.getElementById(id);
-      copiarTexto(input.value, btn);
-    }
+}
 
-    function copiarTexto(texto, btn) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(texto).then(() => {
-          const original = btn.textContent;
-          btn.textContent = "Copiado!";
-          setTimeout(() => btn.textContent = original, 1500);
-        });
-      } else {
-        const tmp = document.createElement("textarea");
-        tmp.value = texto;
-        document.body.appendChild(tmp);
-        tmp.select();
-        document.execCommand("copy");
-        document.body.removeChild(tmp);
 
-        const original = btn.textContent;
-        btn.textContent = "Copiado!";
-        setTimeout(() => btn.textContent = original, 1500);
-      }
-    }
+/* =========================
+   SEGURANÇA HTML
+========================= */
 
-    function formatarData(iso) {
-      const d = new Date(iso);
-      const dia = String(d.getDate()).padStart(2, "0");
-      const mes = String(d.getMonth() + 1).padStart(2, "0");
-      const ano = d.getFullYear();
-      const hora = String(d.getHours()).padStart(2, "0");
-      const min = String(d.getMinutes()).padStart(2, "0");
-      return `${dia}/${mes}/${ano} às ${hora}:${min}`;
-    }
-  </script>
+function escapeHtml(valor) {
+
+  return String(valor ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+function escapeAttribute(valor) {
+
+  return escapeHtml(valor);
+
+}
+
+</script>
 
 </body>
 </html>
